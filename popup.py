@@ -12,20 +12,23 @@ def cargar_estudiantes(ruta):
 
 # Cargar estudiantes desde archivo
 estudiantes = cargar_estudiantes("estudiantes.txt")
+estudiante_actual = None
 
 offset_x = 0
 offset_y = 0
 collapsed = False  # 👈 estado
 
 def seleccionar_archivo():
-    global estudiantes
+    global estudiantes, estudiante_actual
     ruta = filedialog.askopenfilename(
         title="Seleccionar archivo de estudiantes",
         filetypes=[("Archivos de texto", "*.txt")]
     )
     if ruta:
         estudiantes = cargar_estudiantes(ruta)
-        label.configure(text="Lista cargada ✔")
+        estudiante_actual = None
+        label_nombre.configure(text="Lista cargada ✔")
+        btn_quitar.configure(state="disabled")
 
 def iniciar_arrastre(event):
     global offset_x, offset_y
@@ -38,10 +41,29 @@ def mover_ventana(event):
     root.geometry(f"+{x}+{y}")
 
 def elegir():
-    label.configure(text=random.choice(estudiantes))
+    global estudiante_actual
+    if not estudiantes:
+        estudiante_actual = None
+        label_nombre.configure(text="Sin estudiantes")
+        btn_quitar.configure(state="disabled")
+        return
+    estudiante_actual = random.choice(estudiantes)
+    label_nombre.configure(text=estudiante_actual)
+    btn_quitar.configure(state="normal")
 
 def limpiar():
-    label.configure(text="")
+    global estudiante_actual
+    estudiante_actual = None
+    label_nombre.configure(text="")
+    btn_quitar.configure(state="disabled")
+
+def quitar_estudiante():
+    global estudiantes, estudiante_actual
+    if estudiante_actual and estudiante_actual in estudiantes:
+        estudiantes.remove(estudiante_actual)
+    estudiante_actual = None
+    label_nombre.configure(text="")
+    btn_quitar.configure(state="disabled")
 
 def cerrar():
     root.destroy()
@@ -111,8 +133,30 @@ btn_toggle = ctk.CTkButton(
 )
 btn_toggle.pack(side="right", padx=5)
 
-label = ctk.CTkLabel(frame, text="", font=("Segoe UI", 14, "bold"))
-label.pack(expand=True, padx=10, pady=10)
+resultado_frame = ctk.CTkFrame(frame, fg_color="transparent")
+resultado_frame.pack(expand=True, fill="x", padx=8, pady=8)
+label_nombre = ctk.CTkLabel(
+    resultado_frame, text="", font=("Segoe UI", 14, "bold"), anchor="w"
+)
+resultado_frame.columnconfigure(0, weight=1)
+resultado_frame.columnconfigure(1, weight=0)
+
+label_nombre.grid(row=0, column=0, sticky="e", pady=0, padx=(0, 0))
+btn_quitar = ctk.CTkButton(
+    resultado_frame,
+    text="✖",
+    width=28,
+    height=28,
+    command=quitar_estudiante,
+    fg_color="#d32f2f",
+    hover_color="#b71c1c",
+    state="disabled",
+)
+btn_quitar.grid(row=0, column=1, sticky="w", pady=0, padx=(10, 0))
+
+# Center both widgets in the middle of the parent frame horizontally
+resultado_frame.grid_columnconfigure(0, weight=1)
+resultado_frame.grid_columnconfigure(1, weight=1)
 
 posicionar_ventana(root)
 
