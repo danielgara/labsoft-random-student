@@ -16,6 +16,7 @@ estudiante_actual = None
 
 offset_x = 0
 offset_y = 0
+arrastrando = False
 collapsed = False  # 👈 estado
 
 def seleccionar_archivo():
@@ -30,15 +31,33 @@ def seleccionar_archivo():
         label_nombre.configure(text="Lista cargada ✔")
         btn_quitar.configure(state="disabled")
 
+def _widget_es_interactivo(widget):
+    """Evita arrastrar la ventana al hacer clic en botones o etiquetas."""
+    while widget is not None:
+        if isinstance(widget, (ctk.CTkButton, ctk.CTkEntry, ctk.CTkOptionMenu)):
+            return True
+        widget = widget.master
+    return False
+
 def iniciar_arrastre(event):
-    global offset_x, offset_y
-    offset_x = event.x
-    offset_y = event.y
+    global offset_x, offset_y, arrastrando
+    if _widget_es_interactivo(event.widget):
+        arrastrando = False
+        return
+    arrastrando = True
+    offset_x = event.x_root - root.winfo_x()
+    offset_y = event.y_root - root.winfo_y()
 
 def mover_ventana(event):
+    if not arrastrando:
+        return
     x = root.winfo_pointerx() - offset_x
     y = root.winfo_pointery() - offset_y
-    root.geometry(f"+{x}+{y}")
+    root.geometry(f"{root.winfo_width()}x{root.winfo_height()}+{x}+{y}")
+
+def fin_arrastre(_event):
+    global arrastrando
+    arrastrando = False
 
 def elegir():
     global estudiante_actual
@@ -96,6 +115,7 @@ root.overrideredirect(True)
 root.attributes("-topmost", True)
 root.bind("<Button-1>", iniciar_arrastre)
 root.bind("<B1-Motion>", mover_ventana)
+root.bind("<ButtonRelease-1>", fin_arrastre)
 
 frame = ctk.CTkFrame(root, corner_radius=15)
 frame.pack(fill="both", expand=True, padx=5, pady=5)
