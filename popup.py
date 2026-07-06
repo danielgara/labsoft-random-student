@@ -1,3 +1,6 @@
+import sys
+from pathlib import Path
+
 import customtkinter as ctk
 import random
 from screeninfo import get_monitors
@@ -10,8 +13,25 @@ def cargar_estudiantes(ruta):
     with open(ruta, "r", encoding="utf-8") as archivo:
         return [linea.strip() for linea in archivo if linea.strip()]
 
-# Cargar estudiantes desde archivo
-estudiantes = cargar_estudiantes("estudiantes.txt")
+def ruta_estudiantes():
+    nombre = "estudiantes.txt"
+    candidatos = []
+    if getattr(sys, "frozen", False):
+        if hasattr(sys, "_MEIPASS"):
+            candidatos.append(Path(sys._MEIPASS) / nombre)
+        exe = Path(sys.executable).resolve()
+        candidatos.append(exe.parent / nombre)
+        if exe.parent.name == "MacOS":
+            candidatos.append(exe.parent.parent.parent.parent / nombre)
+    else:
+        candidatos.append(Path(__file__).resolve().parent / nombre)
+    for ruta in candidatos:
+        if ruta.exists():
+            return ruta
+    return None
+
+ruta_inicial = ruta_estudiantes()
+estudiantes = cargar_estudiantes(ruta_inicial) if ruta_inicial else []
 estudiante_actual = None
 
 offset_x = 0
