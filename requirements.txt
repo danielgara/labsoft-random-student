@@ -1,2 +1,7 @@
+customtkinter==6.0.0
+Cython==3.2.8
+darkdetect==0.8.0
+packaging==26.2
+pyobjc-core==12.2.1
+pyobjc-framework-Cocoa==12.2.1
 screeninfo==0.8.1
-customtkinter==5.1.3
