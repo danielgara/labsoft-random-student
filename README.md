@@ -1,36 +1,35 @@
 # Selector aleatorio de estudiantes
 
-Pequeña aplicación para Windows que muestra un **selector aleatorio de estudiantes** en una ventana flotante. Está pensada para usarla durante clases, mientras presentas con PowerPoint u otro software.
+Aplicación de escritorio para Windows y macOS que muestra un **selector aleatorio de estudiantes** en una ventana flotante. Pensada para usarla durante clases, mientras presentas con PowerPoint, Keynote u otro software.
 
-La ventana queda siempre visible encima de tus diapositivas para que puedas elegir un estudiante al azar sin salir de la presentación.
+La ventana queda siempre visible encima de tus diapositivas para elegir un estudiante al azar sin salir de la presentación.
+
+No necesitas instalar Python.
 
 ---
 
-## Descargar
+## Descargar (usuario final)
 
-### Opción 1: Clonar el repositorio
-
-```bash
-git clone https://github.com/danielgara/python-estudiante-aleatorio.git
-cd python-estudiante-aleatorio
-```
-
-### Opción 2: Descargar como ZIP
-
-1. Abre [https://github.com/danielgara/python-estudiante-aleatorio](https://github.com/danielgara/python-estudiante-aleatorio)
+1. Abre el repositorio:  
+   [https://github.com/danielgara/python-estudiante-aleatorio](https://github.com/danielgara/python-estudiante-aleatorio)
 2. Haz clic en **Code** → **Download ZIP**
-3. Descomprime el archivo en la carpeta que prefieras
+3. Descomprime el ZIP en la carpeta que prefieras
+
+### Windows
+
+- Usa el archivo **`popup.exe`**
+- Requisitos: Windows 10 o superior
+
+### macOS
+
+- Usa la aplicación **`popup.app`**
+- Requisitos: macOS reciente (Apple Silicon o Intel, según el build que descargues)
+
+> **Tip:** También puedes clonar el repositorio con `git clone` si prefieres; el uso de la app es el mismo.
 
 ---
 
-## Requisitos
-
-- **Windows 10 o superior**
-- No necesitas instalar Python: el proyecto incluye `popup.exe`, un ejecutable listo para usar
-
----
-
-## Cómo usar
+## Cómo usar (modo usuario final)
 
 ### 1. Preparar la lista de estudiantes
 
@@ -42,13 +41,29 @@ CAMILO ARTEAGA
 ALEJANDRO ROMERO
 ```
 
-Guarda el archivo en la **misma carpeta** que `popup.exe`.
+Guárdalo en la **misma carpeta** que el ejecutable:
 
-### 2. Ejecutar la aplicación
+| Sistema | Archivo de la app | Coloca `estudiantes.txt` junto a… |
+|---------|-------------------|-----------------------------------|
+| Windows | `popup.exe`       | `popup.exe`                       |
+| macOS   | `popup.app`       | `popup.app`                       |
 
-Haz doble clic en `popup.exe`.
+### 2. Abrir la aplicación
 
-La ventana aparecerá en la esquina superior izquierda del monitor secundario (si tienes dos pantallas) o del monitor principal.
+**Windows**
+
+1. Haz doble clic en `popup.exe`
+2. Si Windows SmartScreen avisa: **Más información** → **Ejecutar de todas formas**  
+   (o clic derecho → **Propiedades** → marcar **Desbloquear**, si aparece)
+
+**macOS**
+
+1. Haz doble clic en `popup.app`
+2. Si macOS bloquea la app (“no se puede abrir porque es de un desarrollador no identificado”):
+   - Clic derecho (o Control + clic) sobre `popup.app` → **Abrir** → confirma **Abrir**
+   - O ve a **Ajustes del Sistema** → **Privacidad y seguridad** y permite abrir la app
+
+La ventana aparece en la esquina superior izquierda del monitor secundario (si tienes dos pantallas) o del monitor principal.
 
 ### 3. Botones
 
@@ -56,41 +71,48 @@ La ventana aparecerá en la esquina superior izquierda del monitor secundario (s
 |-------|--------|
 | **Escoger** | Selecciona un estudiante al azar de la lista |
 | **Limpiar** | Borra el nombre mostrado |
-| **Cargar** | Abre un archivo `.txt` distinto con otra lista de estudiantes |
+| **Cargar** | Abre un archivo `.txt` distinto con otra lista |
 | **✖** (junto al nombre) | Quita al estudiante seleccionado de la lista actual |
 | **⬇** | Minimiza la ventana a un botón pequeño **Mostrar** |
 | **✖** (rojo, arriba a la derecha) | Cierra la aplicación |
 
 ### 4. Mover la ventana
 
-Arrastra la ventana desde cualquier zona que no sea un botón para colocarla donde te resulte más cómodo.
+Arrastra la ventana desde cualquier zona que no sea un botón.
 
 ---
 
-## Uso con PowerPoint (recomendado)
+## Uso con PowerPoint / Keynote
 
-Para que la ventana flotante funcione bien sobre tu presentación:
-
-1. Abre PowerPoint en **modo ventana** (no en pantalla completa exclusiva)
-2. Ejecuta `popup.exe`
+1. Abre la presentación en **modo ventana** (evita pantalla completa exclusiva si la app queda detrás)
+2. Ejecuta `popup.exe` (Windows) o `popup.app` (macOS)
 3. Coloca la ventana en el monitor del profesor o en un rincón visible
 4. Durante la clase, pulsa **Escoger** cuando quieras llamar a alguien al azar
 
-> **Nota:** Si la ventana queda detrás de la presentación, abre primero PowerPoint y luego ejecuta la aplicación. El modo ventana de PowerPoint suele dar mejores resultados que el modo presentación a pantalla completa.
+> Si la ventana queda detrás, abre primero la presentación y luego la app.
 
 ---
 
-## Personalizar la lista sin editar el archivo
+## Cambiar de lista sin editar el archivo
 
 1. Pulsa **Cargar**
-2. Elige otro archivo `.txt` con un nombre por línea
+2. Elige otro `.txt` (un nombre por línea)
 3. La app usará esa lista de inmediato
 
 ---
 
-## Ejecutar desde código fuente (opcional)
+## Solución de problemas
 
-Si prefieres modificar la aplicación o ejecutarla con Python:
+| Problema | Qué hacer |
+|----------|-----------|
+| Aparece "Sin estudiantes" | Verifica que `estudiantes.txt` esté junto a `popup.exe` / `popup.app` y tenga al menos un nombre |
+| La ventana no se ve encima de la presentación | Usa modo ventana en PowerPoint/Keynote y vuelve a abrir la app |
+| Windows bloquea el `.exe` | Desbloquear en Propiedades, o permitir en el antivirus / SmartScreen |
+| macOS bloquea `.app` | Clic derecho → **Abrir**, o permitir en Privacidad y seguridad |
+
+---
+
+## Ejecutar desde código fuente (opcional, desarrolladores)
 
 **Requisitos:** Python 3.8+
 
@@ -99,27 +121,23 @@ pip install screeninfo==0.8.1 customtkinter==5.1.3
 python popup.py
 ```
 
-Para generar tu propio `.exe`:
+Generar ejecutables con PyInstaller:
 
 ```bash
+# Windows → .exe
 pip install pyinstaller
 pyinstaller --onefile --windowed popup.py
+
+# macOS → .app
+pip install pyinstaller
+pyinstaller --windowed popup.py
 ```
 
-El ejecutable se creará en la carpeta `dist/`.
-
----
-
-## Solución de problemas
-
-| Problema | Qué hacer |
-|----------|-----------|
-| Aparece "Sin estudiantes" | Verifica que `estudiantes.txt` esté junto a `popup.exe` y tenga al menos un nombre |
-| La ventana no se ve encima de PowerPoint | Usa modo ventana en PowerPoint y vuelve a abrir `popup.exe` |
-| Windows bloquea el `.exe` | Clic derecho → **Propiedades** → marcar **Desbloquear** (si aparece), o permitir la app en el antivirus |
+Los artefactos quedan en `dist/`.
 
 ---
 
 ## Licencia
 
 Uso libre para fines educativos y personales.
+```
