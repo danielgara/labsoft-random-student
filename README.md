@@ -63,6 +63,8 @@ Guárdalo en la **misma carpeta** que el ejecutable:
    - Clic derecho (o Control + clic) sobre `popup.app` → **Abrir** → confirma **Abrir**
    - O ve a **Ajustes del Sistema** → **Privacidad y seguridad** y permite abrir la app
 
+> **Nota (macOS):** A veces, la primera vez que abres la app, la lista de estudiantes no se carga sola o se carga con unos estudiantes por defecto que trae la app. Si ves alguno de esos casos, pulsa **Cargar** y selecciona tu archivo `estudiantes.txt`.
+
 La ventana aparece en la esquina superior izquierda del monitor secundario (si tienes dos pantallas) o del monitor principal.
 
 ### 3. Botones
@@ -136,8 +138,3 @@ pyinstaller --windowed popup.py
 Los artefactos quedan en `dist/`.
 
 ---
-
-## Licencia
-
-Uso libre para fines educativos y personales.
-```
