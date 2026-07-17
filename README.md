@@ -11,7 +11,7 @@ No necesitas instalar Python.
 ## Descargar (usuario final)
 
 1. Abre el repositorio:  
-   [https://github.com/danielgara/python-estudiante-aleatorio](https://github.com/danielgara/python-estudiante-aleatorio)
+   [https://github.com/danielgara/labsoft-random-student](https://github.com/danielgara/labsoft-random-student)
 2. Haz clic en **Code** → **Download ZIP**
 3. Descomprime el ZIP en la carpeta que prefieras
 
