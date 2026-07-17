@@ -41,4 +41,7 @@ app = BUNDLE(
     name='popup.app',
     icon=None,
     bundle_identifier=None,
+    info_plist={
+        'LSUIElement': True,
+    },
 )

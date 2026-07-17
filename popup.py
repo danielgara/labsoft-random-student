@@ -131,7 +131,17 @@ def posicionar_ventana(root, ancho=380, alto=140):
 
 # 🔹 Ventana principal
 root = ctk.CTk()
-root.overrideredirect(True)
+root.title("")
+
+if sys.platform == "darwin":
+    try:
+        from AppKit import NSApplication, NSApplicationActivationPolicyAccessory
+        NSApplication.sharedApplication().setActivationPolicy_(
+            NSApplicationActivationPolicyAccessory
+        )
+    except Exception:
+        pass
+
 root.attributes("-topmost", True)
 root.bind("<Button-1>", iniciar_arrastre)
 root.bind("<B1-Motion>", mover_ventana)
