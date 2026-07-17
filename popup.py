@@ -18,10 +18,10 @@ def ruta_estudiantes():
     candidatos = []
     if getattr(sys, "frozen", False):
         exe = Path(sys.executable).resolve()
-        candidatos.append(exe.parent / nombre)                       # junto al ejecutable
-        if exe.parent.name == "MacOS":                               # junto al .app (macOS)
+        candidatos.append(exe.parent / nombre)
+        if exe.parent.name == "MacOS":
             candidatos.append(exe.parent.parent.parent.parent / nombre)
-        if hasattr(sys, "_MEIPASS"):                                 # copia empaquetada: último recurso
+        if hasattr(sys, "_MEIPASS"):
             candidatos.append(Path(sys._MEIPASS) / nombre)
     else:
         candidatos.append(Path(__file__).resolve().parent / nombre)
