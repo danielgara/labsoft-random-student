@@ -37,7 +37,13 @@ estudiante_actual = None
 offset_x = 0
 offset_y = 0
 arrastrando = False
-collapsed = False  # 👈 estado
+collapsed = False
+_animando = False
+
+COLOR_NOMBRE = "#f9fafb"
+COLOR_PLACEHOLDER = "#9ca3af"
+ANIM_CARD_H = 60
+ANIM_CENTER_Y = ANIM_CARD_H // 2
 
 def seleccionar_archivo():
     global estudiantes, estudiante_actual
@@ -81,19 +87,22 @@ def fin_arrastre(_event):
 
 def elegir():
     global estudiante_actual
+    if _animando:
+        return
     if not estudiantes:
         estudiante_actual = None
-        label_nombre.configure(text="Sin estudiantes")
+        label_nombre.configure(text="Sin estudiantes", text_color=COLOR_PLACEHOLDER)
+        label_nombre.place_configure(y=ANIM_CENTER_Y)
         btn_quitar.configure(state="disabled")
         return
     estudiante_actual = random.choice(estudiantes)
-    label_nombre.configure(text=estudiante_actual)
-    btn_quitar.configure(state="normal")
+    animar_seleccion(estudiante_actual)
 
 def limpiar():
     global estudiante_actual
     estudiante_actual = None
-    label_nombre.configure(text="")
+    label_nombre.configure(text="Presiona Escoger", text_color=COLOR_PLACEHOLDER)
+    label_nombre.place_configure(y=ANIM_CENTER_Y)
     btn_quitar.configure(state="disabled")
 
 def quitar_estudiante():
@@ -101,8 +110,43 @@ def quitar_estudiante():
     if estudiante_actual and estudiante_actual in estudiantes:
         estudiantes.remove(estudiante_actual)
     estudiante_actual = None
-    label_nombre.configure(text="")
+    label_nombre.configure(text="Presiona Escoger", text_color=COLOR_PLACEHOLDER)
+    label_nombre.place_configure(y=ANIM_CENTER_Y)
     btn_quitar.configure(state="disabled")
+
+def animar_seleccion(final):
+    global _animando
+    _animando = True
+    btn_quitar.configure(state="disabled")
+    label_nombre.configure(text_color=COLOR_NOMBRE)
+
+    pasos = [(16, 10)] * 6 + [(11, 12)] * 3 + [(7, 15)] * 3
+    total = len(pasos)
+
+    def _caer(y, destino, step, fdelay, done):
+        label_nombre.place_configure(y=y)
+        if y < destino:
+            root.after(fdelay, lambda: _caer(min(y + step, destino),
+                                             destino, step, fdelay, done))
+        else:
+            done()
+
+    def _correr(i):
+        if i >= total:
+            label_nombre.configure(text=final)
+            _caer(-22, ANIM_CENTER_Y, 6, 15, _terminar)
+            return
+        label_nombre.configure(text=random.choice(estudiantes))
+        step, fdelay = pasos[i]
+        _caer(-22, ANIM_CARD_H + 22, step, fdelay, lambda: _correr(i + 1))
+
+    _correr(0)
+
+def _terminar():
+    global _animando
+    _animando = False
+    label_nombre.place_configure(y=ANIM_CENTER_Y)
+    btn_quitar.configure(state="normal")
 
 def cerrar():
     root.destroy()
@@ -117,12 +161,12 @@ def toggle_view():
         collapsed = True
     else:
         frame.pack(fill="both", expand=True, padx=5, pady=5)
-        root.geometry("380x140")
+        root.geometry("380x150")
         toggle_btn.place_forget()
         collapsed = False
 
 
-def posicionar_ventana(root, ancho=380, alto=140):
+def posicionar_ventana(root, ancho=380, alto=150):
     monitores = get_monitors()
     monitor = monitores[1] if len(monitores) > 1 else monitores[0]
     x = monitor.x + 20
@@ -153,13 +197,16 @@ frame.pack(fill="both", expand=True, padx=5, pady=5)
 header = ctk.CTkFrame(frame, fg_color="transparent")
 header.pack(fill="x", padx=10, pady=(10, 5))
 
-btn_elegir = ctk.CTkButton(header, text="Escoger", command=elegir, width=80)
+btn_elegir = ctk.CTkButton(header, text="Escoger", command=elegir, width=80,
+                           fg_color="#22c55e", hover_color="#16a34a")
 btn_elegir.pack(side="left", padx=5)
 
-btn_limpiar = ctk.CTkButton(header, text="Limpiar", command=limpiar, width=80, fg_color="#444")
+btn_limpiar = ctk.CTkButton(header, text="Limpiar", command=limpiar, width=80,
+                            fg_color="#374151", hover_color="#4b5563")
 btn_limpiar.pack(side="left", padx=5)
 
-btn_cargar = ctk.CTkButton(header, text="Cargar", command=seleccionar_archivo, width=80)
+btn_cargar = ctk.CTkButton(header, text="Cargar", command=seleccionar_archivo, width=80,
+                           fg_color="#2563eb", hover_color="#1d4ed8")
 btn_cargar.pack(side="left", padx=5)
 
 btn_cerrar = ctk.CTkButton(header, text="✖", command=cerrar, width=40, fg_color="#d32f2f", hover_color="#b71c1c")
@@ -183,17 +230,12 @@ btn_toggle = ctk.CTkButton(
 )
 btn_toggle.pack(side="right", padx=5)
 
-resultado_frame = ctk.CTkFrame(frame, fg_color="transparent")
-resultado_frame.pack(expand=True, fill="x", padx=8, pady=8)
-label_nombre = ctk.CTkLabel(
-    resultado_frame, text="", font=("Segoe UI", 14, "bold"), anchor="w"
-)
-resultado_frame.columnconfigure(0, weight=1)
-resultado_frame.columnconfigure(1, weight=0)
+tarjeta = ctk.CTkFrame(frame, corner_radius=12, fg_color="#1f2937", height=ANIM_CARD_H)
+tarjeta.pack(fill="x", padx=12, pady=(4, 10))
+tarjeta.pack_propagate(False)
 
-label_nombre.grid(row=0, column=0, sticky="e", pady=0, padx=(0, 0))
 btn_quitar = ctk.CTkButton(
-    resultado_frame,
+    tarjeta,
     text="✖",
     width=28,
     height=28,
@@ -202,11 +244,18 @@ btn_quitar = ctk.CTkButton(
     hover_color="#b71c1c",
     state="disabled",
 )
-btn_quitar.grid(row=0, column=1, sticky="w", pady=0, padx=(10, 0))
+btn_quitar.pack(side="right", padx=(6, 10))
 
-# Center both widgets in the middle of the parent frame horizontally
-resultado_frame.grid_columnconfigure(0, weight=1)
-resultado_frame.grid_columnconfigure(1, weight=1)
+viewport = ctk.CTkFrame(tarjeta, fg_color="transparent")
+viewport.pack(side="left", fill="both", expand=True)
+
+label_nombre = ctk.CTkLabel(
+    viewport,
+    text="Presiona Escoger",
+    font=("Segoe UI", 22, "bold"),
+    text_color=COLOR_PLACEHOLDER,
+)
+label_nombre.place(relx=0.5, y=ANIM_CENTER_Y, anchor="center")
 
 posicionar_ventana(root)
 
