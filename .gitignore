@@ -1,2 +1,5 @@
 # PyInstaller
 build/
+
+# macOS
+.DS_Store
