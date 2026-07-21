@@ -252,7 +252,7 @@ viewport.pack(side="left", fill="both", expand=True)
 label_nombre = ctk.CTkLabel(
     viewport,
     text="Presiona Escoger",
-    font=("Segoe UI", 22, "bold"),
+    font=("Segoe UI", 12, "bold"),
     text_color=COLOR_PLACEHOLDER,
 )
 label_nombre.place(relx=0.5, y=ANIM_CENTER_Y, anchor="center")
